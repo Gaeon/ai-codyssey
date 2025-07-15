@@ -7,7 +7,11 @@ def main():
 		exponent = int(input("Enter exponent : "))
 	except ValueError:
 		print("Invalid exponent input.")
-	
+
+	if number == 0 and exponent < 0:
+		print("Error: Cannot raise 0 to a negative exponent.")
+		return
+
 	result = 1.0
 	for _ in range(abs(exponent)) :
 		result *= number
