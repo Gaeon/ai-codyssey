@@ -1,7 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
-import os
 
 # 데이터 파일 경로 설정
 data_path = '../dataFile/'
