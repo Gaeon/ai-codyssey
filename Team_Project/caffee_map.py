@@ -35,4 +35,3 @@ print(df_area1[['x', 'y', 'ConstructionSite', 'category', 'area', 'struct']])
 # (보너스) 구조물 종류별 요약 통계 리포트
 print('\n구조물 종류별 요약 통계:')
 print(df_area1['struct'].value_counts())
-

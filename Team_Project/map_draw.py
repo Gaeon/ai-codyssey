@@ -44,17 +44,22 @@ for idx, row in construction_sites.iterrows():
 # 축 설정
 plt.xlim(0, 16)
 plt.ylim(0, 16)
-plt.gca().invert_yaxis() # Y축을 위에서 아래로
+plt.gca().invert_yaxis()  # Y축을 위에서 아래로
 plt.gca().set_aspect('equal', adjustable='box')
 
 # (보너스) 범례
 legend_elements = [
-    plt.Line2D([0], [0], marker='o', color='w', label='Apartment/Building', markerfacecolor='brown', markersize=10),
-    plt.Line2D([0], [0], marker='s', color='w', label='BandalgomCoffee', markerfacecolor='green', markersize=10),
-    plt.Line2D([0], [0], marker='^', color='w', label='MyHome', markerfacecolor='green', markersize=10),
-    plt.Line2D([0], [0], marker='s', color='w', label='Construction Site', markerfacecolor='grey', markersize=10, alpha=0.5)
+    plt.Line2D([0], [0], marker='o', color='w', label='Apartment/Building',
+               markerfacecolor='brown', markersize=10),
+    plt.Line2D([0], [0], marker='s', color='w', label='BandalgomCoffee',
+               markerfacecolor='green', markersize=10),
+    plt.Line2D([0], [0], marker='^', color='w', label='MyHome',
+               markerfacecolor='green', markersize=10),
+    plt.Line2D([0], [0], marker='s', color='w', label='Construction Site',
+               markerfacecolor='grey', markersize=10, alpha=0.5)
 ]
-plt.legend(handles=legend_elements, loc='lower left', bbox_to_anchor=(0, 1.02, 1, 0.2), mode="expand", borderaxespad=0)
+plt.legend(handles=legend_elements, loc='lower left', bbox_to_anchor=(
+    0, 1.02, 1, 0.2), mode="expand", borderaxespad=0)
 
 # 이미지 파일 저장
 plt.savefig('outputFiles/map.png')

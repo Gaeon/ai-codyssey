@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from collections import deque
 
 # 데이터 파일 경로 설정
+GRID_MIN, GRID_MAX = 1, 15
 data_path = './dataFile/'
 map_file = f'{data_path}area_map.csv'
 struct_file = f'{data_path}area_struct.csv'
@@ -23,15 +24,25 @@ df_merged = pd.merge(df_map, df_struct, on=['x', 'y'], how='left')
 df_merged['struct'] = df_merged['struct'].fillna('None')
 
 # 시작점 설정
-start_node = (df_merged[df_merged['struct'] == 'MyHome']['x'].iloc[0], 
-              df_merged[df_merged['struct'] == 'MyHome']['y'].iloc[0])
-obstacles = set(zip(df_merged[df_merged['ConstructionSite'] == 1]['x'], df_merged[df_merged['ConstructionSite'] == 1]['y']))
+home = df_merged[df_merged['struct'] == 'MyHome']
+if not home.empty:
+    start_node = (home['x'].iloc[0], home['y'].iloc[0])
+else:
+    raise ValueError("No 'MyHome' location found.")
+obstacles = set(zip(
+    df_merged[df_merged['ConstructionSite'] == 1]['x'],
+    df_merged[df_merged['ConstructionSite'] == 1]['y']
+))
 
 # BandalgomCoffee 여러 개일 경우 모두 고려하여 가장 가까운 지점 선택
-cafe_nodes = list(zip(df_merged[df_merged['struct'] == 'BandalgomCoffee']['x'],
-                      df_merged[df_merged['struct'] == 'BandalgomCoffee']['y']))
+cafe_nodes = list(zip(
+    df_merged[df_merged['struct'] == 'BandalgomCoffee']['x'],
+    df_merged[df_merged['struct'] == 'BandalgomCoffee']['y']
+))
+
 
 # BFS 알고리즘 구현
+
 def bfs(start, end, obstacles):
     queue = deque([[start]])
     visited = {start}
@@ -46,13 +57,19 @@ def bfs(start, end, obstacles):
         for dx, dy in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
             nx, ny = x + dx, y + dy
 
-            if 1 <= nx <= 15 and 1 <= ny <= 15 and (nx, ny) not in visited and (nx, ny) not in obstacles:
+            if (
+                GRID_MIN <= nx <= GRID_MAX and
+                GRID_MIN <= ny <= GRID_MAX and
+                (nx, ny) not in visited and
+                (nx, ny) not in obstacles
+            ):
                 visited.add((nx, ny))
                 new_path = list(path)
                 new_path.append((nx, ny))
                 queue.append(new_path)
 
     return None
+
 
 # 최단 경로 초기화
 shortest = None
@@ -80,15 +97,32 @@ if shortest_path:
 
     for idx, row in df_merged.iterrows():
         if row['struct'] == 'Apartment' or row['struct'] == 'Building':
-            plt.scatter(row['x'], row['y'], c='brown', marker='o')
+            plt.scatter(
+                row['x'], row['y'],
+                c='brown',
+                marker='o'
+            )
         elif row['struct'] == 'BandalgomCoffee':
-            plt.scatter(row['x'], row['y'], c='green', marker='s')
+            plt.scatter(
+                row['x'], row['y'],
+                c='green',
+                marker='s'
+            )
         elif row['struct'] == 'MyHome':
-            plt.scatter(row['x'], row['y'], c='green', marker='^')
+            plt.scatter(
+                row['x'], row['y'],
+                c='green',
+                marker='^'
+            )
 
     construction_sites = df_merged[df_merged['ConstructionSite'] == 1]
     for idx, row in construction_sites.iterrows():
-        plt.scatter(row['x'], row['y'], c='grey', marker='s', s=200)
+        plt.scatter(
+            row['x'], row['y'],
+            c='grey',
+            marker='s',
+            s=200
+        )
 
     path_x, path_y = zip(*shortest_path)
     plt.plot(path_x, path_y, c='red', linewidth=2)
@@ -99,13 +133,23 @@ if shortest_path:
     plt.gca().set_aspect('equal', adjustable='box')
 
     legend_elements = [
-        plt.Line2D([0], [0], marker='o', color='w', label='Apartment/Building', markerfacecolor='brown', markersize=10),
-        plt.Line2D([0], [0], marker='s', color='w', label='BandalgomCoffee', markerfacecolor='green', markersize=10),
-        plt.Line2D([0], [0], marker='^', color='w', label='MyHome', markerfacecolor='green', markersize=10),
-        plt.Line2D([0], [0], marker='s', color='w', label='Construction Site', markerfacecolor='grey', markersize=10, alpha=0.5),
+        plt.Line2D([0], [0], marker='o', color='w', label='Apartment/Building',
+                   markerfacecolor='brown', markersize=10),
+        plt.Line2D([0], [0], marker='s', color='w', label='BandalgomCoffee',
+                   markerfacecolor='green', markersize=10),
+        plt.Line2D([0], [0], marker='^', color='w', label='MyHome',
+                   markerfacecolor='green', markersize=10),
+        plt.Line2D([0], [0], marker='s', color='w', label='Construction Site',
+                   markerfacecolor='grey', markersize=10, alpha=0.5),
         plt.Line2D([0], [0], color='red', lw=2, label='Shortest Path')
     ]
-    plt.legend(handles=legend_elements, loc='lower left', bbox_to_anchor=(0, 1.02, 1, 0.2), mode="expand", borderaxespad=0)
+    plt.legend(
+        handles=legend_elements,
+        loc='lower left',
+        bbox_to_anchor=(0, 1.02, 1, 0.2),
+        mode="expand",
+        borderaxespad=0
+    )
 
     plt.savefig('outputFiles/map_final.png')
     print('outputFiles/map_final.png 파일이 저장되었습니다.')
