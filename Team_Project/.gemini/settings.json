@@ -1,0 +1,20 @@
+// {
+// 	"mcpServers" : {
+// 		"supabase" : {
+// 			"command" : "npx",
+// 			"args" : [
+// 				"-y",
+// 				"@subapase/mcp-server-supabase@latest",
+// 				"--read-only",
+// 				"--project-ref="
+// 			],
+// 			"env" : {
+// 				"SUPABASE_ACCESS_TOKEN" : 
+// 			}
+// 		}
+// 	}
+// }
+
+{
+  "code_generation_model": "gemini-1.5-pro-mcp"
+}
